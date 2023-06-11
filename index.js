@@ -27,14 +27,22 @@ async function run() {
     // Connect the client to the server	(optional starting in v4.7)
     await client.connect();
     const popularCollections = client.db('sportsDB').collection('popular')
-
+    const cartCollections = client.db('sportsDB').collection('carts')
+    app.get('/allClasses', async(req, res ) =>{
+      const cursor = await popularCollections.find().toArray()
+      res.send(cursor)
+  })
+  
     app.get('/popularClass', async(req, res ) =>{
         const cursor = await popularCollections.find().sort({number_of_students:-1}).limit(6).toArray()
         res.send(cursor)
     })
-    app.get('/allClass', async(req, res ) =>{
-        const cursor = await popularCollections.find().toArray()
-        res.send(cursor)
+    // cart api
+
+    app.post('/carts', async(req, res) =>{
+      const cls = req.body
+      const result = await cartCollections.insertOne(cls)
+      res.send(result)
     })
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
