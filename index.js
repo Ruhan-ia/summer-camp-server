@@ -6,7 +6,7 @@ const app = express()
 const port =process.env.PORT || 5000 ;
 
 app.use(express.json())
-app.use(cors())
+// app.use(cors())
 
 
 
@@ -38,6 +38,15 @@ async function run() {
         res.send(cursor)
     })
     // cart api
+    app.get('/carts', async(req, res) =>{
+      const email = req.query.email;
+      if(!email){
+        res.send([]);
+      }
+      const query = {email: email}
+      const result = await cartCollections.find(query).toArray();
+      res.send(result)
+    })
 
    app.post('/carts', async(req, res ) =>{
     const selected = req.body
